@@ -1,0 +1,255 @@
+/**
+ * HandView Component Styles
+ * Feature: 002-card-hand-display
+ * Implements visual card fan/spread layout with responsive sizing
+ */
+
+/* ========================================
+   CSS Custom Properties
+   ======================================== */
+
+:root {
+  /* Card sizing bounds */
+  --card-min-width: 100px;
+  --card-max-width: 160px;
+  --card-aspect-ratio: 1.5; /* height = width * 1.5 */
+  
+  /* Card spacing */
+  --card-overlap-factor: -0.1; /* Small gap between cards (10% of width) */
+  
+  /* Typography */
+  --card-font-min: 12px; /* FR-007 minimum */
+  --card-font-max: 16px;
+  
+  /* Animation */
+  --card-hover-lift: -1.5rem;
+  --card-transition-duration: 0.2s;
+  
+  /* Visual styling (using Pico CSS variables with fallbacks) */
+  --card-background: var(--card-background-color, #ffffff);
+  --card-border-color: var(--primary, #333333);
+  --card-border-width: 2px;
+  --card-border-radius: var(--border-radius, 8px);
+  --card-padding: 1rem 0.75rem; /* More vertical padding for multi-line text */
+  --card-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-background: var(--card-background-color, #2d3748);
+    --card-border-color: var(--primary, #63b3ed);
+  }
+}
+
+/* ========================================
+   Hand Container
+   ======================================== */
+
+.hand-container {
+  /* Layout: Flexbox for horizontal card arrangement */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  
+  /* Spacing */
+  padding: 1rem;
+  max-width: 100%;
+  
+  /* Overflow: Allow hover elevation to extend beyond bounds */
+  overflow: visible;
+  
+  /* Ensure custom property has fallback */
+  --card-count: 1;
+}
+
+/* ========================================
+   Empty State
+   ======================================== */
+
+.hand-container--empty {
+  /* Center empty message */
+  justify-content: center;
+  align-items: center;
+  min-height: 200px; /* Provide visual space for empty state */
+}
+
+.hand-empty-message {
+  color: var(--muted-color, #6c757d);
+  font-style: italic;
+  text-align: center;
+}
+
+/* ========================================
+   Card Element (Base)
+   ======================================== */
+
+.card {
+  /* Sizing (FR-004, FR-006, SC-002) - Content-first approach */
+  width: clamp(
+    var(--card-min-width),
+    calc((100vw - 4rem) / var(--card-count)),
+    var(--card-max-width)
+  );
+  /* Height: auto to accommodate content, with minimum based on aspect ratio */
+  min-height: calc(
+    var(--card-aspect-ratio) * clamp(
+      var(--card-min-width),
+      calc((100vw - 4rem) / var(--card-count)),
+      var(--card-max-width)
+    )
+  );
+  /* Allow cards to grow vertically to fit content */
+  height: auto;
+  
+  /* Spacing (FR-002: horizontal spread with small gap for text visibility) */
+  margin-left: clamp(
+    0.5rem, /* Min gap: 8px */
+    calc(
+      -1 * var(--card-overlap-factor) * clamp(
+        var(--card-min-width),
+        calc((100vw - 4rem) / var(--card-count)),
+        var(--card-max-width)
+      )
+    ),
+    1rem /* Max gap: 16px */
+  );
+  
+  /* Visual styling (FR-011: visually distinct) */
+  background: var(--card-background);
+  border: var(--card-border-width) solid var(--card-border-color);
+  border-radius: var(--card-border-radius);
+  padding: var(--card-padding);
+  
+  /* Additional outline for clear separation */
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+  outline-offset: -1px;
+  
+  /* Typography (FR-007, SC-002: min 12px) */
+  font-size: clamp(var(--card-font-min), 1.2vw, var(--card-font-max));
+  text-align: center;
+  color: var(--color, #333333);
+  
+  /* Layout for content */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  /* Stacking */
+  position: relative;
+  z-index: 1;
+  
+  /* Interaction (FR-009: hover feedback) */
+  cursor: pointer;
+  transition: 
+    transform var(--card-transition-duration) ease,
+    box-shadow var(--card-transition-duration) ease,
+    z-index 0s; /* Instant z-index change */
+  
+  /* Performance optimization */
+  will-change: transform;
+}
+
+/* First card has no overlap */
+.card:first-child {
+  margin-left: 0; /* No overlap for leftmost card */
+}
+
+/* ========================================
+   Card Interactive States
+   ======================================== */
+
+/* Hover state (US3: visual states) */
+.card:hover {
+  /* Elevation */
+  transform: translateY(var(--card-hover-lift));
+  
+  /* Stacking (appear above other cards) */
+  z-index: 10;
+  
+  /* Shadow (SC-005: <200ms response) */
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* Focus state (keyboard navigation) */
+.card:focus {
+  /* Match hover styles for keyboard users */
+  transform: translateY(var(--card-hover-lift));
+  z-index: 10;
+  box-shadow: var(--card-shadow-hover);
+  
+  /* Focus indicator (accessibility) */
+  outline: 3px solid var(--primary-focus, #0066cc);
+  outline-offset: 4px;
+}
+
+/* ========================================
+   Card Content Elements
+   ======================================== */
+
+.card__value {
+  /* Text wrapping for long names - allow full display without truncation */
+  word-break: break-word;
+  overflow-wrap: break-word;
+  
+  /* Ensure readability */
+  font-weight: 500;
+  line-height: 1.4;
+  
+  /* Allow text to wrap naturally without line clamp */
+  white-space: normal;
+}
+
+/* ========================================
+   Responsive Behavior
+   ======================================== */
+
+/* Narrow viewports (<1024px) */
+@media (max-width: 1023px) {
+  .hand-container {
+    /* Allow horizontal scroll on narrow screens */
+    overflow-x: auto;
+    overflow-y: visible; /* Still allow vertical hover elevation */
+  }
+}
+
+/* Mobile touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .card {
+    /* Disable hover cursor on touch devices */
+    cursor: default;
+  }
+  
+  .card:hover {
+    /* No hover state on touch (relies on :active instead) */
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .card:active {
+    /* Touch feedback (US3: visual states) */
+    transform: scale(0.95);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* ========================================
+   Accessibility
+   ======================================== */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    /* Disable transitions for users with motion sensitivities */
+    transition: none;
+  }
+  
+  .card:hover,
+  .card:focus {
+    /* Keep visual states, remove animation */
+    box-shadow: var(--card-shadow-hover);
+    /* No transform animation */
+    transform: none;
+  }
+}

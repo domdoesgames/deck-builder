@@ -1,0 +1,25 @@
+# Baseline Bundle Size - Feature 001: Deck Mechanics
+
+## Foundational Phase (T018)
+Date: 2025-11-12
+Commit: Initial foundational implementation
+
+### Build Output (gzipped)
+- index.html: 0.27 kB
+- CSS (Pico.css + custom): 10.05 kB
+- JavaScript (React + app logic): 46.14 kB
+
+**Total: 56.46 kB gzipped**
+
+### Notes
+- Well under the 150KB budget specified in plan.md
+- Includes Pico.css framework (10.05 kB)
+- React core bundle (46.14 kB)
+- Application logic is minimal at this foundational stage
+- All components are placeholders
+- Zero warnings in build output
+
+### Comparison Target
+- Budget: <150 kB gzipped (per plan.md)
+- Current: 56.46 kB
+- Remaining: 93.54 kB (62% budget available)

@@ -1,0 +1,17 @@
+/* Import Pico.css */
+@import '@picocss/pico/css/pico.min.css';
+
+/* Custom styles and overrides */
+:root {
+  --spacing: 1rem;
+}
+
+/* Landmark styles */
+header, main, footer {
+  padding: var(--spacing);
+}
+
+main {
+  margin-top: var(--spacing);
+  margin-bottom: var(--spacing);
+}
