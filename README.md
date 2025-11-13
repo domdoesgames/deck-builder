@@ -2,13 +2,11 @@
 
 A card game deck management application with draw, discard, and play order mechanics.
 
-![Deployment Status](https://github.com/<username>/deck-builder/actions/workflows/deploy.yml/badge.svg)
+![Deployment Status](https://github.com/domdoesgames/deck-builder/actions/workflows/deploy.yml/badge.svg)
 
 ## Live Demo
 
-**Public URL**: `https://<username>.github.io/deck-builder/`
-
-*Note: Replace `<username>` with the GitHub username when the repository is pushed to GitHub.*
+**Public URL**: `https://domdoesgames.github.io/deck-builder/`
 
 ## Features
 
@@ -164,7 +162,3 @@ See `specs/` directory for examples.
 ## License
 
 MIT License - See LICENSE file for details (if applicable)
-
----
-
-**Note**: This README will be updated with the actual GitHub username and public URL once the repository is pushed to GitHub.
