@@ -27,10 +27,9 @@ function App() {
   return (
     <>
       <header>
-        <h1>Deck Builder</h1>
-        <p>Foundational deck mechanics</p>
+        <h1>Broom Broom</h1>
       </header>
-      
+
       <main>
         <WarningBanner warning={state.warning} error={state.error} />
         <HandView 
@@ -72,10 +71,6 @@ function App() {
         />
         <JsonOverride onApplyJsonOverride={applyJsonOverride} />
       </main>
-      
-      <footer>
-        <p>Feature 001: Deck Mechanics</p>
-      </footer>
     </>
   )
 }
