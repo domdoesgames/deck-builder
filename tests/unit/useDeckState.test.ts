@@ -8,8 +8,4 @@ describe('useDeckState', () => {
   test.todo('applyJsonOverride should update state')
   
   test.todo('changeParameters should update state')
-  
-  test('placeholder test to ensure initial failure', () => {
-    expect(true).toBe(false) // Intentionally failing
-  })
 })

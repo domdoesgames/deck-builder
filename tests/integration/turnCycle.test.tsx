@@ -16,8 +16,8 @@ describe('Turn Cycle Integration', () => {
     const handView = screen.getByRole('region', { name: /current hand/i })
     expect(handView).toBeInTheDocument()
     
-    // Hand should contain 5 cards (using 'article' role from Feature 002)
-    const cards = screen.getAllByRole('article')
+    // Hand should contain 5 cards (using 'button' role from Feature 003)
+    const cards = screen.getAllByRole('button', { name: /card:/i })
     expect(cards).toHaveLength(5)
   })
 
@@ -25,8 +25,12 @@ describe('Turn Cycle Integration', () => {
     const user = userEvent.setup()
     render(<App />)
     
-    // Get initial hand cards (using 'article' role from Feature 002)
-    const initialCards = screen.getAllByRole('article').map(el => el.textContent)
+    // Set discardCount to 0 to test Feature 001 behavior (automatic discard at turn end)
+    const discardCountInput = screen.getByLabelText(/discard count/i)
+    fireEvent.change(discardCountInput, { target: { value: '0' } })
+    
+    // Get initial hand cards (using 'button' role from Feature 003)
+    const initialCards = screen.getAllByRole('button', { name: /card:/i }).map(el => el.textContent)
     expect(initialCards).toHaveLength(5)
     
     // Check initial turn number - find the pile status section
@@ -41,7 +45,7 @@ describe('Turn Cycle Integration', () => {
     expect(pileStatus).toHaveTextContent('Turn: 2')
     
     // Verify new hand dealt (should be 5 cards again)
-    const newCards = screen.getAllByRole('article').map(el => el.textContent)
+    const newCards = screen.getAllByRole('button', { name: /card:/i }).map(el => el.textContent)
     expect(newCards).toHaveLength(5)
     
     // Verify discard pile increased by 5
@@ -51,6 +55,10 @@ describe('Turn Cycle Integration', () => {
   it('should reshuffle discard pile when draw pile exhausted', async () => {
     const user = userEvent.setup()
     render(<App />)
+    
+    // Set discardCount to 0 to test Feature 001 behavior (automatic discard at turn end)
+    const discardCountInput = screen.getByLabelText(/discard count/i)
+    fireEvent.change(discardCountInput, { target: { value: '0' } })
     
     const pileStatus = screen.getByRole('region', { name: /pile status/i })
     
@@ -86,8 +94,8 @@ describe('Turn Cycle Integration', () => {
     // Turn should be 6
     expect(pileStatus).toHaveTextContent('Turn: 6')
     
-    // Hand should still have 5 cards (reshuffle worked) - using 'article' role from Feature 002
-    const cards = screen.getAllByRole('article')
+    // Hand should still have 5 cards (reshuffle worked) - using 'button' role from Feature 003
+    const cards = screen.getAllByRole('button', { name: /card:/i })
     expect(cards).toHaveLength(5)
     
     // Draw pile + discard pile + hand should total 26
@@ -122,6 +130,10 @@ describe('Turn Cycle Integration', () => {
     const user = userEvent.setup()
     render(<App />)
     
+    // Set discardCount to 0 to test Feature 001 behavior (automatic discard at turn end)
+    const discardCountInput = screen.getByLabelText(/discard count/i)
+    fireEvent.change(discardCountInput, { target: { value: '0' } })
+    
     const endTurnButton = screen.getByRole('button', { name: /end turn/i })
     const pileStatus = screen.getByRole('region', { name: /pile status/i })
     
@@ -134,14 +146,18 @@ describe('Turn Cycle Integration', () => {
     // If concurrency protection fails, might advance more
     expect(pileStatus).toHaveTextContent('Turn: 4')
     
-    // Hand should still have exactly 5 cards - using 'article' role from Feature 002
-    const cards = screen.getAllByRole('article')
+    // Hand should still have exactly 5 cards - using 'button' role from Feature 003
+    const cards = screen.getAllByRole('button', { name: /card:/i })
     expect(cards).toHaveLength(5)
   })
 
   it('should disable End Turn button while dealing', async () => {
     const user = userEvent.setup()
     render(<App />)
+    
+    // Set discardCount to 0 to test Feature 001 behavior (automatic discard at turn end)
+    const discardCountInput = screen.getByLabelText(/discard count/i)
+    fireEvent.change(discardCountInput, { target: { value: '0' } })
     
     const endTurnButton = screen.getByRole('button', { name: /end turn/i })
     

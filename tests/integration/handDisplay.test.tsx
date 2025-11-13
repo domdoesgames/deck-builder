@@ -46,12 +46,22 @@ describe('HandView - User Story 2: Responsive Card Sizing', () => {
     setViewportWidth(1024)
     
     // Create maximum hand size (10 cards per FR-006)
-    const tenCardHand = Array.from({ length: 10 }, (_, i) => `Card ${i + 1}`)
+    const tenCardHand = Array.from({ length: 10 }, (_, i) => ({ 
+      instanceId: `card-${i}`, 
+      card: `Card ${i + 1}` 
+    }))
     
-    const { container } = render(<HandView hand={tenCardHand} />)
+    const { container } = render(
+      <HandView 
+        hand={[]} 
+        handCards={tenCardHand} 
+        selectedCardIds={new Set()} 
+        onToggleCardSelection={() => {}} 
+      />
+    )
     
     // Verify all 10 cards rendered
-    const cards = screen.getAllByRole('article')
+    const cards = screen.getAllByRole('button', { name: /card:/i })
     expect(cards).toHaveLength(10)
     
     // Verify container has --card-count set to 10
@@ -69,14 +79,24 @@ describe('HandView - User Story 2: Responsive Card Sizing', () => {
     setViewportWidth(1024)
     
     // Start with 5 cards
-    const fiveCardHand = Array.from({ length: 5 }, (_, i) => `Card ${i + 1}`)
-    const { container, rerender } = render(<HandView hand={fiveCardHand} />)
+    const fiveCardHand = Array.from({ length: 5 }, (_, i) => ({ 
+      instanceId: `card-${i}`, 
+      card: `Card ${i + 1}` 
+    }))
+    const { container, rerender } = render(
+      <HandView 
+        hand={[]} 
+        handCards={fiveCardHand} 
+        selectedCardIds={new Set()} 
+        onToggleCardSelection={() => {}} 
+      />
+    )
     
     // Verify initial state
     let handContainer = container.querySelector('.hand-container')
     expect(handContainer).toHaveStyle({ '--card-count': '5' })
     
-    let cards = screen.getAllByRole('article')
+    let cards = screen.getAllByRole('button', { name: /card:/i })
     expect(cards).toHaveLength(5)
     
     // Store reference to first card for width comparison
@@ -84,15 +104,25 @@ describe('HandView - User Story 2: Responsive Card Sizing', () => {
     expect(firstCard).toBeInTheDocument()
     
     // Change to 10 cards
-    const tenCardHand = Array.from({ length: 10 }, (_, i) => `Card ${i + 1}`)
-    rerender(<HandView hand={tenCardHand} />)
+    const tenCardHand = Array.from({ length: 10 }, (_, i) => ({ 
+      instanceId: `card-${i}`, 
+      card: `Card ${i + 1}` 
+    }))
+    rerender(
+      <HandView 
+        hand={[]} 
+        handCards={tenCardHand} 
+        selectedCardIds={new Set()} 
+        onToggleCardSelection={() => {}} 
+      />
+    )
     
     // Verify --card-count updated
     handContainer = container.querySelector('.hand-container')
     expect(handContainer).toHaveStyle({ '--card-count': '10' })
     
     // Verify card count updated
-    cards = screen.getAllByRole('article')
+    cards = screen.getAllByRole('button', { name: /card:/i })
     expect(cards).toHaveLength(10)
     
     // Note: Card width is controlled by CSS clamp() using --card-count
@@ -104,23 +134,47 @@ describe('HandView - User Story 2: Responsive Card Sizing', () => {
   
   // Additional test: Verify responsive behavior at different viewport sizes
   it('maintains card count custom property at different viewport sizes', () => {
-    const testHand = Array.from({ length: 7 }, (_, i) => `Card ${i + 1}`)
+    const testHand = Array.from({ length: 7 }, (_, i) => ({ 
+      instanceId: `card-${i}`, 
+      card: `Card ${i + 1}` 
+    }))
     
     // Test at mobile viewport
     setViewportWidth(375)
-    const { container: mobileContainer } = render(<HandView hand={testHand} />)
+    const { container: mobileContainer } = render(
+      <HandView 
+        hand={[]} 
+        handCards={testHand} 
+        selectedCardIds={new Set()} 
+        onToggleCardSelection={() => {}} 
+      />
+    )
     let handContainer = mobileContainer.querySelector('.hand-container')
     expect(handContainer).toHaveStyle({ '--card-count': '7' })
     
     // Test at tablet viewport
     setViewportWidth(768)
-    const { container: tabletContainer } = render(<HandView hand={testHand} />)
+    const { container: tabletContainer } = render(
+      <HandView 
+        hand={[]} 
+        handCards={testHand} 
+        selectedCardIds={new Set()} 
+        onToggleCardSelection={() => {}} 
+      />
+    )
     handContainer = tabletContainer.querySelector('.hand-container')
     expect(handContainer).toHaveStyle({ '--card-count': '7' })
     
     // Test at desktop viewport
     setViewportWidth(1440)
-    const { container: desktopContainer } = render(<HandView hand={testHand} />)
+    const { container: desktopContainer } = render(
+      <HandView 
+        hand={[]} 
+        handCards={testHand} 
+        selectedCardIds={new Set()} 
+        onToggleCardSelection={() => {}} 
+      />
+    )
     handContainer = desktopContainer.querySelector('.hand-container')
     expect(handContainer).toHaveStyle({ '--card-count': '7' })
     
@@ -132,8 +186,18 @@ describe('HandView - User Story 2: Responsive Card Sizing', () => {
   it('allows horizontal scroll on narrow viewports', () => {
     setViewportWidth(600) // Below 1024px threshold
     
-    const tenCardHand = Array.from({ length: 10 }, (_, i) => `Card ${i + 1}`)
-    const { container } = render(<HandView hand={tenCardHand} />)
+    const tenCardHand = Array.from({ length: 10 }, (_, i) => ({ 
+      instanceId: `card-${i}`, 
+      card: `Card ${i + 1}` 
+    }))
+    const { container } = render(
+      <HandView 
+        hand={[]} 
+        handCards={tenCardHand} 
+        selectedCardIds={new Set()} 
+        onToggleCardSelection={() => {}} 
+      />
+    )
     
     const handContainer = container.querySelector('.hand-container')
     expect(handContainer).toBeInTheDocument()
@@ -147,12 +211,19 @@ describe('HandView - User Story 2: Responsive Card Sizing', () => {
   it('single card uses maximum width at desktop viewport', () => {
     setViewportWidth(1440)
     
-    const { container } = render(<HandView hand={['Single Card']} />)
+    const { container } = render(
+      <HandView 
+        hand={[]} 
+        handCards={[{ instanceId: 'card-1', card: 'Single Card' }]} 
+        selectedCardIds={new Set()} 
+        onToggleCardSelection={() => {}} 
+      />
+    )
     
     const handContainer = container.querySelector('.hand-container')
     expect(handContainer).toHaveStyle({ '--card-count': '1' })
     
-    const card = screen.getByRole('article')
+    const card = screen.getByRole('button', { name: /card:/i })
     expect(card).toBeInTheDocument()
     
     // With --card-count: 1 and 1440px viewport:

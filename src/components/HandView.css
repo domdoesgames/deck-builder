@@ -185,6 +185,46 @@
 }
 
 /* ========================================
+   Feature 003: Card Selection State
+   ======================================== */
+
+/* Selected state (discard mechanic) */
+.card.selected {
+  /* Visual distinction: border and background change */
+  border-color: var(--primary, #0066cc);
+  border-width: 3px;
+  background: var(--primary-focus, rgba(0, 102, 204, 0.1));
+  
+  /* Slight elevation to indicate selection */
+  transform: translateY(-8px);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+  
+  /* Higher z-index to appear above non-selected cards */
+  z-index: 5;
+}
+
+/* Selected + Hover (allow further elevation) */
+.card.selected:hover {
+  transform: translateY(calc(var(--card-hover-lift) - 8px));
+  z-index: 10;
+}
+
+/* Selected + Focus (keyboard navigation) */
+.card.selected:focus {
+  transform: translateY(calc(var(--card-hover-lift) - 8px));
+  z-index: 10;
+  outline-color: var(--primary, #0066cc);
+}
+
+/* Dark mode: selected state adjustments */
+@media (prefers-color-scheme: dark) {
+  .card.selected {
+    background: var(--primary-focus, rgba(99, 179, 237, 0.2));
+    box-shadow: 0 4px 12px rgba(99, 179, 237, 0.4);
+  }
+}
+
+/* ========================================
    Card Content Elements
    ======================================== */
 
@@ -200,6 +240,115 @@
   /* Allow text to wrap naturally without line clamp */
   white-space: normal;
 }
+
+/* ========================================
+   Feature 004: Play Order Sequence Badge (T030)
+   ======================================== */
+
+.card__sequence-badge {
+  /* Position in bottom-right corner of card (avoid covering card text) */
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  
+  /* Size and shape */
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  
+  /* Visual styling */
+  background: var(--primary, #0066cc);
+  color: var(--primary-inverse, #ffffff);
+  font-weight: 600;
+  font-size: 0.875rem;
+  
+  /* Layout badge content */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Border for contrast */
+  border: 2px solid var(--card-background, #ffffff);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  
+  /* Ensure badge appears above card content */
+  z-index: 1;
+}
+
+/* Dark mode: badge adjustments */
+@media (prefers-color-scheme: dark) {
+  .card__sequence-badge {
+    background: var(--primary, #63b3ed);
+    color: var(--primary-inverse, #1a202c);
+    border-color: var(--card-background, #2d3748);
+  }
+}
+
+/* ========================================
+   Feature 004: Planning Phase Hover Effects (T031)
+   ======================================== */
+
+/* Planning phase: Enhanced hover to indicate selectability */
+.hand-container[data-planning-phase="true"] .card:hover {
+  /* Slightly more lift during planning phase */
+  transform: translateY(calc(var(--card-hover-lift) - 4px));
+  
+  /* Highlight border to indicate it's selectable for ordering */
+  border-color: var(--primary, #0066cc);
+  border-width: 3px;
+  
+  /* Add subtle glow effect */
+  box-shadow: 
+    var(--card-shadow-hover),
+    0 0 0 2px var(--primary-focus, rgba(0, 102, 204, 0.3));
+}
+
+/* Planning phase: Focus styles */
+.hand-container[data-planning-phase="true"] .card:focus {
+  transform: translateY(calc(var(--card-hover-lift) - 4px));
+  border-color: var(--primary, #0066cc);
+  border-width: 3px;
+}
+
+/* ========================================
+   Feature 005: Locked State Styling (T057-T060)
+   ======================================== */
+
+/* Locked cards: Visual feedback for non-interactivity */
+.card--locked {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(20%);
+}
+
+/* Locked cards: Disable hover effects */
+.card--locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Locked cards: Disable focus effects */
+.card--locked:focus {
+  transform: none;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Locked cards: Change sequence badge to green (success state) */
+.card--locked .card__sequence-badge {
+  background-color: var(--pico-success-background, #28a745);
+  color: var(--pico-success-inverse, #ffffff);
+}
+
+/* Dark mode: locked badge adjustments */
+@media (prefers-color-scheme: dark) {
+  .card--locked .card__sequence-badge {
+    background-color: var(--pico-success-background, #48c774);
+    color: var(--pico-success-inverse, #1a202c);
+  }
+}
+
 
 /* ========================================
    Responsive Behavior
@@ -246,7 +395,8 @@
   }
   
   .card:hover,
-  .card:focus {
+  .card:focus,
+  .card.selected {
     /* Keep visual states, remove animation */
     box-shadow: var(--card-shadow-hover);
     /* No transform animation */

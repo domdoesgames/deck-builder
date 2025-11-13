@@ -1,17 +1,30 @@
 import { DeckState } from '../lib/types'
+import { useState, useEffect } from 'react'
 
 /**
  * DeckControls component (US1)
  * Controls for hand size, discard count, and End Turn button
+ * Feature 006: Now includes Reset button
  */
 
 interface DeckControlsProps {
   state: DeckState
   onEndTurn: () => void
   onChangeParameters: (handSize: number, discardCount: number, immediateReset: boolean) => void
+  reset: () => void  // Feature 006: Reset action (T005)
 }
 
-export function DeckControls({ state, onEndTurn, onChangeParameters }: DeckControlsProps) {
+export function DeckControls({ state, onChangeParameters, reset }: DeckControlsProps) {
+  // Feature 006: Track button disabled state (T006, C010)
+  const [isResetting, setIsResetting] = useState(false)
+
+  // Reset the disabled state after state update completes
+  useEffect(() => {
+    if (isResetting) {
+      setIsResetting(false)
+    }
+  }, [state, isResetting])
+
   const handleHandSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newHandSize = parseInt(e.target.value, 10)
     const isMidTurn = state.hand.length > 0
@@ -22,6 +35,12 @@ export function DeckControls({ state, onEndTurn, onChangeParameters }: DeckContr
     const newDiscardCount = parseInt(e.target.value, 10)
     const isMidTurn = state.hand.length > 0
     onChangeParameters(state.handSize, newDiscardCount, isMidTurn)
+  }
+
+  // Feature 006: Reset handler (T006)
+  const handleReset = () => {
+    setIsResetting(true)
+    reset()
   }
 
   return (
@@ -48,18 +67,20 @@ export function DeckControls({ state, onEndTurn, onChangeParameters }: DeckContr
             onChange={handleDiscardCountChange}
             aria-label="Discard count"
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20].map(count => (
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20].map(count => (
               <option key={count} value={count}>{count}</option>
             ))}
           </select>
         </label>
 
-        <button 
-          onClick={onEndTurn} 
-          disabled={state.isDealing}
-          aria-label="End turn"
+        {/* Feature 006: Reset button (T006, C010) */}
+        <button
+          onClick={handleReset}
+          disabled={isResetting}
+          aria-label="Reset game"
+          title="Reset the game to initial state while preserving hand size and discard count settings"
         >
-          End Turn
+          {isResetting ? 'Resetting...' : 'Reset'}
         </button>
       </div>
     </div>

@@ -29,4 +29,14 @@ export const DEFAULT_DECK: string[] = [
 ]
 
 export const DEFAULT_HAND_SIZE = 5
-export const DEFAULT_DISCARD_COUNT = 5
+export const DEFAULT_DISCARD_COUNT = 2
+
+// Feature 005: Persistence constants
+export const STORAGE_KEY = 'deck-builder-state'
+export const PERSISTENCE_VERSION = 1
+
+// Validation bounds (Feature 005)
+export const MIN_HAND_SIZE = 1
+export const MAX_HAND_SIZE = 10
+export const MIN_DISCARD_COUNT = 0 // Feature 005: Zero discard is valid
+export const MAX_DISCARD_COUNT = 20
