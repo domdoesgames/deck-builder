@@ -3,6 +3,7 @@ import { HandView } from './components/HandView'
 import { PileCounts } from './components/PileCounts'
 import { JsonOverride } from './components/JsonOverride'
 import { WarningBanner } from './components/WarningBanner'
+import { SettingsPanel } from './components/SettingsPanel'
 import { useDeckState } from './hooks/useDeckState'
 
 /**
@@ -31,7 +32,7 @@ function App() {
       </header>
 
       <main>
-        <WarningBanner warning={state.warning} error={state.error} />
+        <WarningBanner warning={state.warning} error={null} />
         <HandView 
           hand={state.hand} 
           handCards={state.handCards}
@@ -63,13 +64,15 @@ function App() {
           discardPileSize={state.discardPile.length}
           turnNumber={state.turnNumber}
         />
-        <DeckControls 
-          state={state}
-          onEndTurn={endTurn}
-          onChangeParameters={changeParameters}
-          reset={reset}
-        />
-        <JsonOverride onApplyJsonOverride={applyJsonOverride} />
+        <SettingsPanel error={state.error}>
+          <DeckControls 
+            state={state}
+            onEndTurn={endTurn}
+            onChangeParameters={changeParameters}
+            reset={reset}
+          />
+          <JsonOverride onApplyJsonOverride={applyJsonOverride} error={state.error} />
+        </SettingsPanel>
       </main>
     </>
   )

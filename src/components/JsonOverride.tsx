@@ -7,9 +7,10 @@ import { useState } from 'react'
 
 interface JsonOverrideProps {
   onApplyJsonOverride: (jsonString: string) => void
+  error: string | null
 }
 
-export function JsonOverride({ onApplyJsonOverride }: JsonOverrideProps) {
+export function JsonOverride({ onApplyJsonOverride, error }: JsonOverrideProps) {
   const [value, setValue] = useState('')
 
   const handleApply = () => {
@@ -19,6 +20,18 @@ export function JsonOverride({ onApplyJsonOverride }: JsonOverrideProps) {
   return (
     <div>
       <h2>JSON Deck Override</h2>
+      {error && (
+        <div style={{ 
+          padding: '1rem', 
+          marginBottom: '1rem', 
+          backgroundColor: '#f8d7da', 
+          color: '#721c24', 
+          border: '1px solid #f5c6cb', 
+          borderRadius: '4px' 
+        }}>
+          {error}
+        </div>
+      )}
       <label>
         Deck JSON:
         <textarea 

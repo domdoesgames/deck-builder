@@ -78,3 +78,10 @@ export interface ValidationResult {
   state: DeckState | null
   errors: string[]
 }
+
+/**
+ * Feature 008: Settings panel visibility state
+ */
+export interface SettingsVisibilityState {
+  isExpanded: boolean
+}

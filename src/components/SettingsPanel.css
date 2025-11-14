@@ -1,0 +1,60 @@
+/* Settings Panel Container */
+.settings-panel {
+  margin: 1rem 0;
+}
+
+/* Toggle Button */
+.settings-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing, 1rem);
+  background: var(--card-background-color, #ffffff);
+  border: 1px solid var(--muted-border-color, #dee2e6);
+  border-radius: var(--border-radius, 8px);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color, #333333);
+  transition: background 0.2s ease;
+}
+
+.settings-toggle:hover {
+  background: var(--secondary-hover, #f8f9fa);
+}
+
+.settings-toggle:focus-visible {
+  outline: 2px solid var(--primary, #0066cc);
+  outline-offset: 2px;
+}
+
+.toggle-icon {
+  margin-left: auto;
+  font-size: 0.875rem;
+  transition: transform 0.2s ease;
+}
+
+/* Settings Content - Grid Animation */
+.settings-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+  overflow: hidden;
+}
+
+.settings-content.expanded {
+  grid-template-rows: 1fr;
+}
+
+.settings-content__inner {
+  min-height: 0; /* Required for grid row animation */
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .settings-content,
+  .toggle-icon {
+    transition: none;
+  }
+}
