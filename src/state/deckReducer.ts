@@ -75,6 +75,22 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
     case 'LOAD_PRESET_DECK':
       return loadPresetDeck(action.payload.presetId, state)
     
+    // Feature 009: Start custom deck mode (T027)
+    case 'START_CUSTOM_DECK': {
+      // Transition to custom deck mode, clearing preset selection
+      // Preserves current hand size and discard count settings
+      const handSize = state.handSize
+      const discardCount = state.discardCount
+      
+      // Initialize new deck with preserved settings
+      return initializeDeck({ 
+        handSize, 
+        discardCount,
+        deckSource: 'custom',
+        activePresetId: null,
+      })
+    }
+    
     default:
       return state
   }

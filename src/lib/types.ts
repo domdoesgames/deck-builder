@@ -66,6 +66,7 @@ export type DeckAction =
   | { type: 'RESET' }
   // Feature 009: Preset deck actions
   | { type: 'LOAD_PRESET_DECK'; payload: { presetId: string } }
+  | { type: 'START_CUSTOM_DECK' }
 
 /**
  * Feature 005: Persisted state (subset of DeckState)

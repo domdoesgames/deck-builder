@@ -265,4 +265,231 @@ describe('Preset Deck Selection Integration', () => {
     const endTurnButton = screen.getByRole('button', { name: /end turn/i }) as HTMLButtonElement
     expect(endTurnButton).toBeDefined()
   })
+
+  // US3: Mode Switching Tests
+  describe('Mode Switching (US3)', () => {
+    // US3-AC1: Using JSON override on preset deck switches to custom mode
+    it('switches to custom mode when JSON override used on preset deck', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      // Expand settings
+      const toggleButton = screen.getByRole('button', { name: /settings/i })
+      await user.click(toggleButton)
+
+      // Load starter deck (preset mode)
+      const starterRadio = screen.getByRole('radio', { name: /select starter deck/i })
+      await user.click(starterRadio)
+      const loadButton = screen.getByRole('button', { name: /load selected preset deck/i })
+      await user.click(loadButton)
+
+      // Verify we're in preset mode
+      expect(screen.getByText(/current mode:/i)).toBeDefined()
+      // Look for the strong tag that says "Preset Deck"
+      const modeIndicator = screen.getByText(/current mode:/i).parentElement
+      expect(modeIndicator?.textContent).toMatch(/preset deck/i)
+
+      // Now use JSON override to inject custom deck (array of card name strings)
+      const customDeckJson = JSON.stringify([
+        'Ace of Hearts',
+        'King of Spades',
+        '2 of Diamonds'
+      ])
+
+      const jsonTextarea = screen.getByLabelText(/deck json/i) as HTMLTextAreaElement
+      await user.click(jsonTextarea)
+      await user.paste(customDeckJson)
+
+      const applyButton = screen.getByRole('button', { name: /apply deck/i })
+      await user.click(applyButton)
+
+      // Wait a moment for state to update
+      await new Promise(resolve => setTimeout(resolve, 50))
+
+      // Verify mode switched to custom
+      expect(screen.getByText(/custom deck/i)).toBeDefined()
+      // Look for the p tag containing "Current mode" and check it contains "Custom"
+      const paragraphs = screen.queryAllByText(/current mode:/i)
+      const modeParagraph = paragraphs.find(p => p.textContent?.includes('Custom Deck'))
+      expect(modeParagraph).toBeDefined()
+      expect(modeParagraph?.textContent).toMatch(/custom deck/i)
+      expect(modeParagraph?.textContent).not.toMatch(/preset deck.*\(/i) // Avoid matching "(starter-deck)"
+
+      // Verify preset indicator is no longer active
+      expect(screen.queryByLabelText(/currently active/i)).toBeNull()
+    })
+
+    // US3-AC2: "Start Custom Deck" button switches from preset to custom mode
+    it('switches to custom mode when "Start Custom Deck" clicked', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      // Expand settings
+      const toggleButton = screen.getByRole('button', { name: /settings/i })
+      await user.click(toggleButton)
+
+      // Load starter deck (preset mode)
+      const starterRadio = screen.getByRole('radio', { name: /select starter deck/i })
+      await user.click(starterRadio)
+      const loadButton = screen.getByRole('button', { name: /load selected preset deck/i })
+      await user.click(loadButton)
+
+      // Verify we're in preset mode
+      expect(screen.getByText(/current mode:/i)).toBeDefined()
+      // Look for the strong tag that says "Preset Deck"
+      const modeIndicator = screen.getByText(/current mode:/i).parentElement
+      expect(modeIndicator?.textContent).toMatch(/preset deck/i)
+
+      // Click "Start Custom Deck" button
+      const customDeckButton = screen.getByRole('button', { name: /start.*custom deck/i })
+      await user.click(customDeckButton)
+
+      // Wait a moment for state to update
+      await new Promise(resolve => setTimeout(resolve, 50))
+
+      // Verify mode switched to custom
+      expect(screen.getByText(/custom deck/i)).toBeDefined()
+      // Look for the p tag containing "Current mode" and check it contains "Custom"
+      const paragraphs = screen.queryAllByText(/current mode:/i)
+      const modeParagraph = paragraphs.find(p => p.textContent?.includes('Custom Deck'))
+      expect(modeParagraph).toBeDefined()
+      expect(modeParagraph?.textContent).toMatch(/custom deck/i)
+
+      // Verify preset indicator is no longer active
+      expect(screen.queryByLabelText(/currently active/i)).toBeNull()
+
+      // Verify "Start Custom Deck" button is no longer visible
+      expect(screen.queryByRole('button', { name: /start.*custom deck/i })).toBeNull()
+    })
+
+    // US3-AC3: Loading preset from custom mode switches to preset mode
+    it('switches to preset mode when preset loaded from custom mode', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      // Expand settings
+      const toggleButton = screen.getByRole('button', { name: /settings/i })
+      await user.click(toggleButton)
+
+      // Start with custom deck via JSON override (array of card name strings)
+      const customDeckJson = JSON.stringify([
+        'Ace of Hearts',
+        'King of Spades',
+        '2 of Diamonds'
+      ])
+
+      const jsonTextarea = screen.getByLabelText(/deck json/i) as HTMLTextAreaElement
+      await user.click(jsonTextarea)
+      await user.paste(customDeckJson)
+      const applyButton = screen.getByRole('button', { name: /apply deck/i })
+      await user.click(applyButton)
+
+      // Wait a moment for state to update
+      await new Promise(resolve => setTimeout(resolve, 50))
+
+      // Verify we're in custom mode
+      expect(screen.getByText(/custom deck/i)).toBeDefined()
+
+      // Now load a preset deck
+      const starterRadio = screen.getByRole('radio', { name: /select starter deck/i })
+      await user.click(starterRadio)
+      const loadButton = screen.getByRole('button', { name: /load selected preset deck/i })
+      await user.click(loadButton)
+
+      // Verify mode switched to preset
+      // The mode indicator is in a <p> tag that starts with "Current mode:"
+      const allParagraphs = screen.queryAllByText(/current mode:/i)
+      const modeParagraph = allParagraphs.find(p => p.tagName === 'P')
+      expect(modeParagraph?.textContent).toMatch(/preset deck/i)
+      // The strong tag inside should say "Preset Deck"
+      const strongTag = modeParagraph?.querySelector('strong')
+      expect(strongTag?.textContent).toBe('Preset Deck')
+
+      // Verify preset indicator is active
+      const activeIndicators = screen.getAllByLabelText(/currently active/i)
+      expect(activeIndicators.length).toBeGreaterThan(0)
+    })
+
+    // US3-AC4: Mode transitions persist across page reloads
+    it('persists mode transitions across page reloads', async () => {
+      const user = userEvent.setup()
+      const { unmount } = render(<App />)
+
+      // Expand settings
+      const toggleButton = screen.getByRole('button', { name: /settings/i })
+      await user.click(toggleButton)
+
+      // Load preset deck
+      const starterRadio = screen.getByRole('radio', { name: /select starter deck/i })
+      await user.click(starterRadio)
+      const loadButton = screen.getByRole('button', { name: /load selected preset deck/i })
+      await user.click(loadButton)
+
+      // Verify preset mode
+      const modeIndicator = screen.getByText(/current mode:/i).parentElement
+      expect(modeIndicator?.textContent).toMatch(/preset deck/i)
+
+      // Switch to custom mode
+      const customDeckButton = screen.getByRole('button', { name: /start.*custom deck/i })
+      await user.click(customDeckButton)
+
+      // Verify custom mode
+      expect(screen.getByText(/custom deck/i)).toBeDefined()
+
+      // Wait for persistence
+      await new Promise(resolve => setTimeout(resolve, 150))
+
+      // Unmount and remount (simulate page reload)
+      unmount()
+      render(<App />)
+
+      // Verify mode persisted as custom
+      expect(screen.getByText(/custom deck/i)).toBeDefined()
+      // Verify not showing preset mode
+      const modeText = screen.getByText(/current mode:/i).parentElement?.textContent || ''
+      expect(modeText).toMatch(/custom/i)
+
+      // Verify no preset indicator
+      const newToggleButton = screen.getByRole('button', { name: /settings/i })
+      await user.click(newToggleButton)
+      expect(screen.queryByLabelText(/currently active/i)).toBeNull()
+    })
+
+    // US3-AC5: Mode switching preserves user settings (hand size, discard count)
+    it('preserves user settings during mode transitions', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      // Expand settings
+      const toggleButton = screen.getByRole('button', { name: /settings/i })
+      await user.click(toggleButton)
+
+      // Set custom hand size and discard count
+      const handSizeInput = screen.getByLabelText(/hand size/i) as HTMLSelectElement
+      await user.selectOptions(handSizeInput, '7')
+      expect(handSizeInput.value).toBe('7')
+
+      const discardCountInput = screen.getByLabelText(/discard count/i) as HTMLSelectElement
+      await user.selectOptions(discardCountInput, '3')
+      expect(discardCountInput.value).toBe('3')
+
+      // Load preset deck
+      const starterRadio = screen.getByRole('radio', { name: /select starter deck/i })
+      await user.click(starterRadio)
+      const loadButton = screen.getByRole('button', { name: /load selected preset deck/i })
+      await user.click(loadButton)
+
+      // Verify settings preserved
+      expect(handSizeInput.value).toBe('7')
+      expect(discardCountInput.value).toBe('3')
+
+      // Switch to custom mode
+      const customDeckButton = screen.getByRole('button', { name: /start.*custom deck/i })
+      await user.click(customDeckButton)
+
+      // Verify settings still preserved
+      expect(handSizeInput.value).toBe('7')
+      expect(discardCountInput.value).toBe('3')
+    })
+  })
 })

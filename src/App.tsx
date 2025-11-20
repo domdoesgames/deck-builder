@@ -25,6 +25,7 @@ function App() {
     clearPlayOrder,
     reset,  // Feature 006: Reset action (T007)
     loadPresetDeck,  // Feature 009: Preset deck loading (T019)
+    startCustomDeck,  // Feature 009: Start custom deck mode (T027)
   } = useDeckState()
 
   return (
@@ -78,6 +79,31 @@ function App() {
             reset={reset}
           />
           <JsonOverride onApplyJsonOverride={applyJsonOverride} error={state.error} />
+          {/* Feature 009: Start Custom Deck button (T026, T028) */}
+          {state.deckSource === 'preset' && (
+            <div style={{ marginTop: '1rem' }}>
+              <button 
+                onClick={startCustomDeck}
+                type="button"
+                aria-label="Start a new custom deck"
+              >
+                Start Custom Deck
+              </button>
+              <p style={{ fontSize: '0.875rem', color: 'var(--muted-color, #6c757d)', marginTop: '0.5rem' }}>
+                Current mode: <strong>Preset Deck</strong> ({state.activePresetId})
+              </p>
+            </div>
+          )}
+          {state.deckSource === 'custom' && (
+            <p style={{ fontSize: '0.875rem', color: 'var(--muted-color, #6c757d)', marginTop: '0.5rem' }}>
+              Current mode: <strong>Custom Deck</strong>
+            </p>
+          )}
+          {state.deckSource === 'default' && (
+            <p style={{ fontSize: '0.875rem', color: 'var(--muted-color, #6c757d)', marginTop: '0.5rem' }}>
+              Current mode: <strong>Default Deck</strong>
+            </p>
+          )}
         </SettingsPanel>
       </main>
     </>

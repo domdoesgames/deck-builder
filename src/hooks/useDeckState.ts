@@ -96,6 +96,11 @@ export function useDeckState() {
     dispatch({ type: 'LOAD_PRESET_DECK', payload: { presetId } })
   }, [])
   
+  // Feature 009: Start custom deck mode (T027)
+  const startCustomDeck = useCallback(() => {
+    dispatch({ type: 'START_CUSTOM_DECK' })
+  }, [])
+  
   return {
     state,
     dealNextHand,
@@ -110,5 +115,6 @@ export function useDeckState() {
     clearPlayOrder,
     reset,
     loadPresetDeck,
+    startCustomDeck,
   }
 }
