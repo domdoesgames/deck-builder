@@ -2,6 +2,7 @@ import { DeckState, DeckAction } from '../lib/types'
 import { DEFAULT_DECK, DEFAULT_HAND_SIZE, DEFAULT_DISCARD_COUNT, MIN_DISCARD_COUNT } from '../lib/constants'
 import { shuffle } from '../lib/shuffle'
 import { generateCardInstance } from '../lib/cardInstance'
+import { PRESET_DECKS } from '../lib/presetDecks'
 
 /**
  * Deck state reducer implementing all actions per contracts/deck-contracts.md
@@ -62,15 +63,29 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
         : DEFAULT_DISCARD_COUNT
       
       // Reset to initial state with preserved settings (C002, C004, C005)
-      return initializeDeck({ handSize: preservedHandSize, discardCount: preservedDiscardCount })
+      return initializeDeck({ 
+        handSize: preservedHandSize, 
+        discardCount: preservedDiscardCount,
+        deckSource: 'default',
+        activePresetId: null,
+      })
     }
+    
+    // Feature 009: Load preset deck (T009)
+    case 'LOAD_PRESET_DECK':
+      return loadPresetDeck(action.payload.presetId, state)
     
     default:
       return state
   }
 }
 
-function initializeDeck(params?: { handSize?: number; discardCount?: number }): DeckState {
+function initializeDeck(params?: { 
+  handSize?: number; 
+  discardCount?: number;
+  deckSource?: 'preset' | 'custom' | 'default';
+  activePresetId?: string | null;
+}): DeckState {
   // Feature 006: Shuffle deck on every initialization (C001)
   const drawPile = shuffle([...DEFAULT_DECK])
   const initialState: DeckState = {
@@ -91,6 +106,9 @@ function initializeDeck(params?: { handSize?: number; discardCount?: number }): 
     playOrderSequence: [],
     playOrderLocked: false,
     planningPhase: false,
+    // Feature 009: Preset deck selection
+    deckSource: params?.deckSource ?? 'default',
+    activePresetId: params?.activePresetId ?? null,
   }
   
   return dealNextHand(initialState)
@@ -216,6 +234,9 @@ export function applyJsonOverride(raw: string, state: DeckState): DeckState {
         handCards: [],
         warning: 'Empty deck provided, reverted to default',
         error: null,
+        // Feature 009: Custom deck via JSON override (T010)
+        deckSource: 'custom',
+        activePresetId: null,
       }, true)  // Preserve the warning message
     }
     
@@ -230,6 +251,9 @@ export function applyJsonOverride(raw: string, state: DeckState): DeckState {
       handCards: [],
       warning: null,
       error: null,
+      // Feature 009: Custom deck via JSON override (T010)
+      deckSource: 'custom',
+      activePresetId: null,
     })
     
   } catch (err) {
@@ -461,3 +485,47 @@ function clearPlayOrder(state: DeckState): DeckState {
   }
 }
 
+/**
+ * Feature 009: Load preset deck (T009)
+ * Per specs/009-preset-deck-selection/contracts/persistenceManager-extension.contract.md
+ * 
+ * Looks up preset by ID, validates structure, and rebuilds deck state.
+ * Similar to APPLY_JSON_OVERRIDE but for code-managed presets.
+ */
+function loadPresetDeck(presetId: string, state: DeckState): DeckState {
+  // Look up preset by ID
+  const preset = PRESET_DECKS.find(deck => deck.id === presetId)
+  
+  // Preset not found: return error state
+  if (!preset) {
+    return {
+      ...state,
+      error: `Preset deck "${presetId}" not found`,
+    }
+  }
+  
+  // Validate preset has cards
+  if (!preset.cards || preset.cards.length === 0) {
+    return {
+      ...state,
+      error: `Preset deck "${preset.name}" has no cards`,
+    }
+  }
+  
+  // Valid preset: rebuild deck state
+  // Shuffle the preset deck (consistent with all deck initializations)
+  const drawPile = shuffle([...preset.cards])
+  
+  return dealNextHand({
+    ...state,
+    drawPile,
+    discardPile: [],
+    hand: [],
+    handCards: [],
+    warning: null,
+    error: null,
+    // Set deck source and active preset ID
+    deckSource: 'preset',
+    activePresetId: presetId,
+  })
+}

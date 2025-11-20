@@ -44,6 +44,9 @@ export interface DeckState {
   playOrderSequence: string[]   // Ordered array of CardInstance.instanceIds
   playOrderLocked: boolean       // Whether the order is permanently locked
   planningPhase: boolean         // True during Planning, false otherwise
+  // Feature 009: Preset deck selection extensions
+  deckSource: DeckSource        // Where the current deck configuration originated
+  activePresetId: string | null // ID of currently active preset deck (null if using custom/default)
 }
 
 export type DeckAction =
@@ -61,6 +64,8 @@ export type DeckAction =
   | { type: 'CLEAR_PLAY_ORDER' }
   // Feature 006: Deck reset action
   | { type: 'RESET' }
+  // Feature 009: Preset deck actions
+  | { type: 'LOAD_PRESET_DECK'; payload: { presetId: string } }
 
 /**
  * Feature 005: Persisted state (subset of DeckState)
@@ -85,3 +90,29 @@ export interface ValidationResult {
 export interface SettingsVisibilityState {
   isExpanded: boolean
 }
+
+/**
+ * Feature 009: Preset Deck Selection
+ */
+
+/**
+ * A pre-configured deck definition managed in code
+ */
+export interface PresetDeck {
+  /** Unique identifier for persistence and programmatic access */
+  id: string;
+  
+  /** Human-readable display name shown in preset deck list */
+  name: string;
+  
+  /** Brief description of deck composition and strategy (1-2 sentences) */
+  description: string;
+  
+  /** Array of card identifiers using existing Card type */
+  cards: Card[];
+}
+
+/**
+ * Enumeration tracking where the current deck configuration originated
+ */
+export type DeckSource = 'preset' | 'custom' | 'default';
