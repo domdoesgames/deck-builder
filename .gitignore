@@ -62,3 +62,6 @@ Desktop.ini
 # Misc
 .eslintcache
 .vite/
+
+# Debug files
+test-debug.js

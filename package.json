@@ -4,9 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "npm run validate:presets && tsc && vite build",
     "test": "jest",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "validate:presets": "npx tsx scripts/validate-presets.ts"
   },
   "dependencies": {
     "@picocss/pico": "^1.5.0",
