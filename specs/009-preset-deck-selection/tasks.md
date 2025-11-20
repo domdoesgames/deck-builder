@@ -90,15 +90,15 @@ Phase 1 → Phase 2 → Phase 3 (US1) → [Phase 4 (US2) || Phase 5 (US3) || Pha
 **Estimated Time**: 3-4 hours
 
 ### Implementation
-- [ ] T015 [P] [US1] Implement preset deck validator with 6 rules in `src/lib/presetDeckValidator.ts`
-- [ ] T016 [US1] Implement `PresetDeckSelector` component UI in `src/components/PresetDeckSelector.tsx`
-- [ ] T017 [US1] Add preset list rendering with radio selection in `PresetDeckSelector`
-- [ ] T018 [US1] Implement "Load Selected Deck" button handler in `PresetDeckSelector`
-- [ ] T019 [US1] Integrate `PresetDeckSelector` into `SettingsPanel` in `src/components/SettingsPanel.tsx`
+- [X] T015 [P] [US1] Implement preset deck validator with 6 rules in `src/lib/presetDeckValidator.ts`
+- [X] T016 [US1] Implement `PresetDeckSelector` component UI in `src/components/PresetDeckSelector.tsx`
+- [X] T017 [US1] Add preset list rendering with radio selection in `PresetDeckSelector`
+- [X] T018 [US1] Implement "Load Selected Deck" button handler in `PresetDeckSelector`
+- [X] T019 [US1] Integrate `PresetDeckSelector` into `SettingsPanel` in `src/components/SettingsPanel.tsx`
 
 ### Testing
-- [ ] T020 [P] [US1] Create contract tests in `tests/contract/presetDeckContracts.test.ts`
-- [ ] T021 [US1] Create integration test for preset deck selection flow in `tests/integration/presetDeckSelection.test.tsx`
+- [X] T020 [P] [US1] Create contract tests in `tests/contract/presetDeckContracts.test.ts`
+- [X] T021 [US1] Create integration test for preset deck selection flow in `tests/integration/presetDeckSelection.test.tsx`
 
 **Acceptance Criteria** (from spec.md):
 - Settings panel displays list of available preset decks
@@ -117,12 +117,12 @@ Phase 1 → Phase 2 → Phase 3 (US1) → [Phase 4 (US2) || Phase 5 (US3) || Pha
 **Estimated Time**: 2-3 hours
 
 ### Implementation
-- [ ] T022 [US2] Add expand/collapse state management to `PresetDeckSelector`
-- [ ] T023 [US2] Implement expandable section UI with card composition display
-- [ ] T024 [US2] Add CSS styling for expand/collapse animations in `src/components/SettingsPanel.css`
+- [X] T022 [US2] Add expand/collapse state management to `PresetDeckSelector`
+- [X] T023 [US2] Implement expandable section UI with card composition display
+- [X] T024 [US2] Add CSS styling for expand/collapse animations in `src/components/SettingsPanel.css`
 
 ### Testing
-- [ ] T025 [US2] Add component interaction tests for expand/collapse in `tests/integration/presetDeckSelection.test.tsx`
+- [X] T025 [US2] Add component interaction tests for expand/collapse in `tests/integration/presetDeckSelection.test.tsx`
 
 **Acceptance Criteria** (from spec.md):
 - Each preset deck has an expand/collapse control (e.g., chevron icon)
@@ -139,13 +139,13 @@ Phase 1 → Phase 2 → Phase 3 (US1) → [Phase 4 (US2) || Phase 5 (US3) || Pha
 **Estimated Time**: 2-3 hours
 
 ### Implementation
-- [ ] T026 [US3] Add "Start Custom Deck" button to `SettingsPanel` UI
-- [ ] T027 [US3] Implement custom deck handler that transitions to `deckSource: 'custom'`
-- [ ] T028 [US3] Add visual indicators for current deck source mode in `SettingsPanel`
-- [ ] T029 [US3] Update `JsonOverride` component to set `deckSource: 'custom'` on load
+- [X] T026 [US3] Add "Start Custom Deck" button to `SettingsPanel` UI
+- [X] T027 [US3] Implement custom deck handler that transitions to `deckSource: 'custom'`
+- [X] T028 [US3] Add visual indicators for current deck source mode in `SettingsPanel`
+- [X] T029 [US3] Update `JsonOverride` component to set `deckSource: 'custom'` on load
 
 ### Testing
-- [ ] T030 [US3] Add mode switching validation tests in `tests/integration/presetDeckSelection.test.tsx`
+- [X] T030 [US3] Add mode switching validation tests in `tests/integration/presetDeckSelection.test.tsx`
 
 **Acceptance Criteria** (from spec.md):
 - "Start Custom Deck" button clears preset selection and sets `deckSource: 'custom'`
@@ -161,9 +161,9 @@ Phase 1 → Phase 2 → Phase 3 (US1) → [Phase 4 (US2) || Phase 5 (US3) || Pha
 **Priority**: P2 (Should Have)  
 **Estimated Time**: 1-2 hours
 
-- [ ] T031 [P] Create validation script in `scripts/validate-presets.ts`
-- [ ] T032 Update `package.json` with `validate:presets` script
-- [ ] T033 Add validation step to `.github/workflows/deploy.yml`
+- [X] T031 [P] Create validation script in `scripts/validate-presets.ts`
+- [X] T032 Update `package.json` with `validate:presets` script
+- [X] T033 Add validation step to `.github/workflows/deploy.yml`
 
 **Acceptance Criteria**:
 - Script validates all preset decks against 6 rules from contract
@@ -178,10 +178,10 @@ Phase 1 → Phase 2 → Phase 3 (US1) → [Phase 4 (US2) || Phase 5 (US3) || Pha
 **Priority**: P3 (Could Have)  
 **Estimated Time**: 2-3 hours
 
-- [ ] T034 [P] Add ARIA labels and keyboard navigation to `PresetDeckSelector`
-- [ ] T035 [P] Test responsive design on mobile viewports (320px-768px)
-- [ ] T036 Update README.md with preset deck selection feature
-- [ ] T037 Add inline code comments for complex validation logic
+- [X] T034 [P] Add ARIA labels and keyboard navigation to `PresetDeckSelector`
+- [X] T035 [P] Test responsive design on mobile viewports (320px-768px)
+- [X] T036 Update README.md with preset deck selection feature
+- [X] T037 Add inline code comments for complex validation logic
 
 **Acceptance Criteria**:
 - Component is fully keyboard accessible
