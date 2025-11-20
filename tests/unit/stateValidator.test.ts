@@ -27,6 +27,8 @@ describe('stateValidator', () => {
     playOrderSequence: ['id1'],
     playOrderLocked: false,
     planningPhase: true,
+    deckSource: 'default',
+    activePresetId: null,
   }
 
   describe('validateAndSanitizeDeckState()', () => {

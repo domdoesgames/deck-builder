@@ -4,6 +4,7 @@ import { PileCounts } from './components/PileCounts'
 import { JsonOverride } from './components/JsonOverride'
 import { WarningBanner } from './components/WarningBanner'
 import { SettingsPanel } from './components/SettingsPanel'
+import { PresetDeckSelector } from './components/PresetDeckSelector'
 import { useDeckState } from './hooks/useDeckState'
 
 /**
@@ -22,7 +23,8 @@ function App() {
     deselectFromPlayOrder,
     lockPlayOrder,
     clearPlayOrder,
-    reset  // Feature 006: Reset action (T007)
+    reset,  // Feature 006: Reset action (T007)
+    loadPresetDeck,  // Feature 009: Preset deck loading (T019)
   } = useDeckState()
 
   return (
@@ -65,6 +67,10 @@ function App() {
           turnNumber={state.turnNumber}
         />
         <SettingsPanel error={state.error}>
+          <PresetDeckSelector 
+            onSelectPreset={loadPresetDeck}
+            activePresetId={state.activePresetId}
+          />
           <DeckControls 
             state={state}
             onEndTurn={endTurn}

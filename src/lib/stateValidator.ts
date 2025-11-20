@@ -59,6 +59,10 @@ export function validateAndSanitizeDeckState(data: any): ValidationResult {
       // Complex objects
       discardPhase: sanitizeDiscardPhase(data.discardPhase, errors),
 
+      // Feature 009: Deck source tracking
+      deckSource: sanitizeDeckSource(data.deckSource, errors),
+      activePresetId: typeof data.activePresetId === 'string' ? data.activePresetId : null,
+
       // Transient fields (always reset to defaults)
       selectedCardIds: new Set<string>(),
       isDealing: false,
@@ -191,6 +195,24 @@ function sanitizeDiscardPhase(
 }
 
 /**
+ * Sanitize DeckSource value (Feature 009)
+ */
+function sanitizeDeckSource(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any,
+  errors: string[]
+): 'preset' | 'custom' | 'default' {
+  const validSources = ['preset', 'custom', 'default']
+  
+  if (typeof value === 'string' && validSources.includes(value)) {
+    return value as 'preset' | 'custom' | 'default'
+  }
+  
+  errors.push('deckSource is invalid, using default')
+  return 'default'
+}
+
+/**
  * Extract unknown fields for forward compatibility
  * Preserves fields not in DeckState interface
  */
@@ -212,6 +234,8 @@ function getExtraFields(data: any): Record<string, any> {
     'discardPhase',
     'selectedCardIds',
     'isDealing',
+    'deckSource',
+    'activePresetId',
   ])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
