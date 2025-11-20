@@ -47,6 +47,7 @@ describe('Preset Deck Validator Contracts', () => {
 
   describe('Rule 2: ID Field Validation', () => {
     it('should reject missing id field', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...deckWithoutId } = validPresetDeck
       const result = validatePresetDeck(deckWithoutId)
       
@@ -99,6 +100,7 @@ describe('Preset Deck Validator Contracts', () => {
 
   describe('Rule 3: Name Field Validation', () => {
     it('should reject missing name field', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { name, ...deckWithoutName } = validPresetDeck
       const result = validatePresetDeck(deckWithoutName)
       
@@ -140,6 +142,7 @@ describe('Preset Deck Validator Contracts', () => {
 
   describe('Rule 4: Description Field Validation', () => {
     it('should reject missing description field', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { description, ...deckWithoutDesc } = validPresetDeck
       const result = validatePresetDeck(deckWithoutDesc)
       
@@ -181,6 +184,7 @@ describe('Preset Deck Validator Contracts', () => {
 
   describe('Rule 5: Cards Array Validation', () => {
     it('should reject missing cards field', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { cards, ...deckWithoutCards } = validPresetDeck
       const result = validatePresetDeck(deckWithoutCards)
       
