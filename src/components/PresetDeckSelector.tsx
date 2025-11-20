@@ -67,6 +67,14 @@ export function PresetDeckSelector(props: PresetDeckSelectorProps): JSX.Element 
     setExpandedDeckId(prev => prev === deckId ? null : deckId);
   };
 
+  // Handle keyboard events on toggle button (Enter/Space)
+  const handleToggleKeyDown = (event: React.KeyboardEvent, deckId: string) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleExpanded(deckId);
+    }
+  };
+
   // Handle radio selection change
   const handleRadioChange = (presetId: string) => {
     setSelectedPresetId(presetId);
@@ -141,7 +149,9 @@ export function PresetDeckSelector(props: PresetDeckSelectorProps): JSX.Element 
                 aria-controls={detailsId}
                 aria-label={`${isExpanded ? 'Hide' : 'Show'} deck details for ${deck.name}`}
                 onClick={() => toggleExpanded(deck.id)}
+                onKeyDown={(e) => handleToggleKeyDown(e, deck.id)}
                 type="button"
+                tabIndex={0}
               >
                 {isExpanded ? '▲' : '▼'}
               </button>

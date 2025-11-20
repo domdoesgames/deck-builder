@@ -14,6 +14,8 @@ A card game deck management application with draw, discard, and play order mecha
 - **Discard Mechanic**: Select and discard cards during discard phase
 - **Play Order**: Sequence cards for play with visual ordering
 - **Deck Reset**: Reset to initial state while preserving user settings
+- **Preset Decks**: Quick deck selection from curated preset configurations
+- **Custom Decks**: JSON override for loading custom deck definitions
 - **Persistence**: Game state saved to browser localStorage
 - **Turn Tracking**: Monitor turn count and deck status
 
@@ -34,9 +36,10 @@ npm install
 
 ```bash
 npm run dev      # Start development server (http://localhost:5173)
-npm run build    # Build for production
+npm run build    # Build for production (includes preset deck validation)
 npm test         # Run test suite (Jest)
 npm run lint     # Run ESLint
+npm run validate:presets  # Validate preset deck definitions
 ```
 
 ### Testing
@@ -60,17 +63,23 @@ src/
 │   ├── DeckControls.tsx
 │   ├── HandView.tsx
 │   ├── PileCounts.tsx
+│   ├── PresetDeckSelector.tsx
+│   ├── SettingsPanel.tsx
+│   ├── JsonOverride.tsx
 │   └── WarningBanner.tsx
 ├── hooks/           # Custom React hooks
 │   ├── useDeckState.ts
-│   └── useDeckStatePersistence.ts
+│   ├── useDeckStatePersistence.ts
+│   └── useSettingsVisibility.ts
 ├── lib/             # Core game logic
 │   ├── constants.ts
 │   ├── types.ts
 │   ├── shuffle.ts
 │   ├── cardInstance.ts
 │   ├── persistenceManager.ts
-│   └── stateValidator.ts
+│   ├── stateValidator.ts
+│   ├── presetDecks.ts
+│   └── presetDeckValidator.ts
 ├── state/           # State management
 │   └── deckReducer.ts
 └── App.tsx          # Root component
@@ -80,6 +89,9 @@ tests/
 ├── integration/     # Integration tests
 └── unit/           # Unit tests
 
+scripts/
+└── validate-presets.ts  # Build-time preset deck validation
+
 specs/              # Feature specifications
 ├── 001-deck-mechanics/
 ├── 002-card-hand-display/
@@ -87,7 +99,9 @@ specs/              # Feature specifications
 ├── 004-card-play-order/
 ├── 005-spec-compliance-remediation/
 ├── 006-deck-reset/
-└── 007-github-pages-deployment/
+├── 007-github-pages-deployment/
+├── 008-settings-panel/
+└── 009-preset-deck-selection/
 ```
 
 ## Deployment
@@ -97,7 +111,7 @@ The application is automatically deployed to GitHub Pages when changes are pushe
 ### Deployment Process
 
 1. **Push to Main**: Merge changes to the main branch
-2. **GitHub Actions**: Workflow runs tests, linter, and builds production assets
+2. **GitHub Actions**: Workflow validates preset decks, runs tests, linter, and builds production assets
 3. **Deploy**: Artifacts are deployed to GitHub Pages
 4. **Live**: Updates appear at the public URL within 5-10 minutes
 
@@ -118,6 +132,25 @@ npx vite preview --port 4173
 ```
 
 Open `http://localhost:4173/deck-builder/` to view the production build with the correct base path.
+
+## Adding New Preset Decks
+
+Preset decks are defined in `src/lib/presetDecks.ts` and validated at build time. To add a new preset deck:
+
+1. **Edit** `src/lib/presetDecks.ts` and add a new entry to the `PRESET_DECKS` array
+2. **Follow the structure**:
+   ```typescript
+   {
+     id: 'my-deck',              // Unique kebab-case ID
+     name: 'My Deck',            // Display name (max 50 chars)
+     description: 'Description', // Brief description (max 200 chars)
+     cards: ['Card 1', 'Card 2'] // Array of card names (min 1 card)
+   }
+   ```
+3. **Validate** by running `npm run validate:presets`
+4. **Build** to ensure validation passes: `npm run build`
+
+The build will fail if any preset deck is invalid, preventing deployment of broken configurations.
 
 ## Technology Stack
 
