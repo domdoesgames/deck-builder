@@ -22,18 +22,12 @@ export const PRESET_DECKS: PresetDeck[] = [
   {
     id: 'starter-deck',
     name: 'Starter Deck',
-    description: 'A balanced deck for learning the game mechanics with 20 cards.',
+    description: 'Basic starter deck for witch team in Broom Broom',
     cards: [
-      'Card 1', 'Card 1', 'Card 1',
-      'Card 2', 'Card 2', 'Card 2',
-      'Card 3', 'Card 3', 'Card 3',
-      'Card 4', 'Card 4',
-      'Card 5', 'Card 5',
-      'Card 6', 'Card 6',
-      'Card 7', 'Card 7',
-      'Card 8',
-      'Card 9',
-      'Card 10',
+      'Maiden Move 1', 'Mother Move 1', 'Crone Move 1',
+      'Maiden Move 1', 'Mother Move 1', 'Crone Move 1',
+      'Maiden Move 2', 'Mother Move 2', 'Crone Move 2',
+      'Maiden Move 3', 'Mother Deflect', 'Crone Disorient',
     ]
   }
 ];
